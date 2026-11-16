@@ -1,0 +1,90 @@
+{
+  "entities": {
+    "PlayerSave": {
+      "title": "PlayerSave",
+      "description": "Cloud RPG progression save document owned by a single authenticated player.",
+      "type": "object",
+      "properties": {
+        "ownerUid": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "displayName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "coins": {
+          "type": "number"
+        },
+        "envelopes": {
+          "type": "number"
+        },
+        "pityCounter": {
+          "type": "number"
+        },
+        "totalPulls": {
+          "type": "number"
+        },
+        "ownedCharacters": {
+          "type": "object"
+        },
+        "partyIds": {
+          "type": "array"
+        },
+        "highestStageIndex": {
+          "type": "number"
+        },
+        "selectedStageIndex": {
+          "type": "number"
+        },
+        "lastCashClaimAt": {
+          "type": "number"
+        },
+        "arenaWins": {
+          "type": "number"
+        },
+        "raidClears": {
+          "type": "number"
+        },
+        "soundMuted": {
+          "type": "boolean"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "ownerUid",
+        "displayName",
+        "coins",
+        "envelopes",
+        "pityCounter",
+        "totalPulls",
+        "ownedCharacters",
+        "partyIds",
+        "highestStageIndex",
+        "selectedStageIndex",
+        "lastCashClaimAt",
+        "arenaWins",
+        "raidClears",
+        "soundMuted",
+        "createdAt",
+        "updatedAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/players/{playerId}": {
+      "schema": { "$ref": "#/entities/PlayerSave" },
+      "description": "Private player RPG save document keyed by Firebase Auth UID."
+    }
+  }
+}

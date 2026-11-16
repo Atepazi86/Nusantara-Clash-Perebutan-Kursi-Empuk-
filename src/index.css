@@ -1,0 +1,257 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-display: 'Fredoka', system-ui, sans-serif;
+    --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background-color: #141824;
+    background-image: radial-gradient(circle at 50% 0%, #24304d 0%, #141824 65%);
+    color: #1e1e24;
+  }
+
+  h1, h2, h3, .font-display {
+    font-family: var(--font-display);
+  }
+
+  .font-mono-num {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* Tactile 2D Mobile RPG Panels & Glossy Game Buttons */
+.game-frame {
+  background: #23283b;
+  border: 3px solid #10121a;
+  box-shadow: 0 8px 0 #0d0f17, inset 0 2px 0 rgba(255, 255, 255, 0.12);
+}
+
+.game-parchment {
+  background: #fff7e6;
+  border: 3px solid #181a24;
+  box-shadow: 0 4px 0 #181a24, inset 0 2px 0 rgba(255, 255, 255, 0.9);
+}
+
+.game-slot {
+  background: #f5ebd4;
+  border: 2.5px solid #181a24;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.comic-panel {
+  border: 3px solid #181a24;
+  box-shadow: 0 4px 0 #181a24, inset 0 2px 0 rgba(255, 255, 255, 0.65);
+}
+
+.comic-panel-sm {
+  border: 2.5px solid #181a24;
+  box-shadow: 0 3px 0 #181a24;
+}
+
+.comic-btn {
+  border: 2.5px solid #181a24;
+  box-shadow: 0 4px 0 #181a24, inset 0 2px 0 rgba(255, 255, 255, 0.45);
+  transition: transform 110ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 110ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.comic-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 5px 0 #181a24, inset 0 2px 0 rgba(255, 255, 255, 0.55);
+}
+
+.comic-btn:active:not(:disabled) {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 #181a24;
+}
+
+.comic-btn:disabled {
+  opacity: 0.48;
+  cursor: not-allowed;
+}
+
+/* Chibi Bouncy Idle Animation */
+@keyframes chibi-bounce {
+  0%, 100% {
+    transform: translateY(0px) scaleY(1) scaleX(1);
+  }
+  50% {
+    transform: translateY(-6px) scaleY(1.03) scaleX(0.98);
+  }
+}
+
+.animate-chibi-bounce {
+  animation: chibi-bounce 1.8s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+
+/* Attack lunge animations */
+@keyframes lunge-right {
+  0% { transform: translateX(0) scale(1); }
+  35% { transform: translateX(28px) scale(1.08); }
+  100% { transform: translateX(0) scale(1); }
+}
+
+@keyframes lunge-left {
+  0% { transform: translateX(0) scale(1); }
+  35% { transform: translateX(-28px) scale(1.08); }
+  100% { transform: translateX(0) scale(1); }
+}
+
+.animate-lunge-right {
+  animation: lunge-right 0.36s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.animate-lunge-left {
+  animation: lunge-left 0.36s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Hit shake */
+@keyframes hit-shake {
+  0%, 100% { transform: translateX(0); filter: brightness(1); }
+  20% { transform: translateX(-7px) rotate(-3deg); filter: brightness(1.6); }
+  45% { transform: translateX(7px) rotate(3deg); filter: brightness(1.4); }
+  75% { transform: translateX(-4px); filter: brightness(1.1); }
+}
+
+.animate-hit-shake {
+  animation: hit-shake 0.38s ease-out;
+}
+
+/* Critical Screen Shake */
+@keyframes arena-shake {
+  0%, 100% { transform: translate(0, 0); }
+  15% { transform: translate(-6px, 4px); }
+  30% { transform: translate(6px, -4px); }
+  45% { transform: translate(-5px, -3px); }
+  65% { transform: translate(4px, 3px); }
+  85% { transform: translate(-2px, 1px); }
+}
+
+.animate-arena-shake {
+  animation: arena-shake 0.36s ease-out;
+}
+
+/* Floating Damage Number */
+@keyframes float-damage {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 6px) scale(0.7);
+  }
+  20% {
+    opacity: 1;
+    transform: translate(-50%, -14px) scale(1.12);
+  }
+  80% {
+    opacity: 1;
+    transform: translate(-50%, -34px) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -48px) scale(0.9);
+  }
+}
+
+.animate-float-damage {
+  animation: float-damage 0.95s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Envelope Gacha Shake */
+@keyframes envelope-wobble {
+  0%, 100% { transform: rotate(0deg) scale(1); }
+  20% { transform: rotate(-6deg) scale(1.04); }
+  40% { transform: rotate(6deg) scale(1.06); }
+  60% { transform: rotate(-5deg) scale(1.08); }
+  80% { transform: rotate(4deg) scale(1.05); }
+}
+
+.animate-envelope-wobble {
+  animation: envelope-wobble 0.55s ease-in-out infinite;
+}
+
+/* Comedic Joget Dance Animation */
+@keyframes joget-dance {
+  0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
+  20% { transform: translate(-6px, -8px) rotate(-10deg) scale(1.1); }
+  45% { transform: translate(6px, -4px) rotate(10deg) scale(1.08); }
+  70% { transform: translate(-5px, -9px) rotate(-8deg) scale(1.12); }
+  85% { transform: translate(4px, -3px) rotate(6deg) scale(1.05); }
+}
+
+.animate-joget {
+  animation: joget-dance 0.65s ease-in-out;
+}
+
+/* Santuy Dodge Lean */
+@keyframes santuy-dodge {
+  0%, 100% { transform: translateX(0) rotate(0deg); }
+  35% { transform: translateX(-14px) rotate(-18deg) scale(0.95); }
+  65% { transform: translateX(-10px) rotate(-14deg); }
+}
+
+.animate-santuy-dodge {
+  animation: santuy-dodge 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Dizzy Stun Wobble */
+@keyframes stun-wobble {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-6deg) translateX(-2px); }
+  75% { transform: rotate(6deg) translateX(2px); }
+}
+
+.animate-stun-wobble {
+  animation: stun-wobble 0.5s ease-in-out infinite;
+}
+
+/* Rubbery Drop Pop for Team Drag & Drop */
+@keyframes drop-pop {
+  0% { transform: scale(0.75); }
+  50% { transform: scale(1.12, 0.9); }
+  75% { transform: scale(0.95, 1.06); }
+  100% { transform: scale(1); }
+}
+
+.animate-drop-pop {
+  animation: drop-pop 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Comic Callout Speech Bubble Pop */
+@keyframes callout-pop {
+  0% { opacity: 0; transform: translate(-50%, 8px) scale(0.5) rotate(-6deg); }
+  20% { opacity: 1; transform: translate(-50%, -6px) scale(1.12) rotate(3deg); }
+  80% { opacity: 1; transform: translate(-50%, -10px) scale(1) rotate(-2deg); }
+  100% { opacity: 0; transform: translate(-50%, -18px) scale(0.85); }
+}
+
+.animate-callout-pop {
+  animation: callout-pop 1.15s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Subtle custom scrollbar for roster strip */
+.roster-scroll::-webkit-scrollbar {
+  height: 7px;
+}
+.roster-scroll::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 999px;
+}
+.roster-scroll::-webkit-scrollbar-thumb {
+  background: #f59e0b;
+  border-radius: 999px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-chibi-bounce,
+  .animate-envelope-wobble,
+  .animate-arena-shake,
+  .animate-hit-shake,
+  .animate-lunge-right,
+  .animate-lunge-left {
+    animation: none !important;
+  }
+}

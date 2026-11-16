@@ -1,0 +1,8 @@
+{
+  "name": "Nusantara Clash: Perebutan Kursi Empuk",
+  "description": "Game RPG Turn-Based 2D Chibi & Gacha parodi satir Nusantara dengan sistem progresi jangka panjang, karakter ikonik, Restu pasif, dan pertarungan 4v4.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

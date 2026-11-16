@@ -1,0 +1,126 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global Safety Net: Deny all by default
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isVerified() {
+      return request.auth.token.email_verified == true;
+    }
+
+    function isValidPlayerSave(data) {
+      return data.keys().hasAll([
+          'ownerUid',
+          'displayName',
+          'coins',
+          'envelopes',
+          'pityCounter',
+          'totalPulls',
+          'ownedCharacters',
+          'partyIds',
+          'highestStageIndex',
+          'selectedStageIndex',
+          'lastCashClaimAt',
+          'arenaWins',
+          'raidClears',
+          'soundMuted',
+          'createdAt',
+          'updatedAt'
+        ])
+        && data.keys().hasOnly([
+          'ownerUid',
+          'displayName',
+          'coins',
+          'envelopes',
+          'pityCounter',
+          'totalPulls',
+          'ownedCharacters',
+          'partyIds',
+          'highestStageIndex',
+          'selectedStageIndex',
+          'lastCashClaimAt',
+          'arenaWins',
+          'raidClears',
+          'soundMuted',
+          'createdAt',
+          'updatedAt'
+        ])
+        && data.ownerUid is string
+        && isValidId(data.ownerUid)
+        && data.ownerUid == request.auth.uid
+        && data.displayName is string
+        && data.displayName.size() >= 1
+        && data.displayName.size() <= 80
+        && data.coins is number && data.coins >= 0 && data.coins <= 999999999
+        && data.envelopes is number && data.envelopes >= 0 && data.envelopes <= 999999999
+        && data.pityCounter is number && data.pityCounter >= 0 && data.pityCounter <= 50
+        && data.totalPulls is number && data.totalPulls >= 0 && data.totalPulls <= 1000000
+        && data.ownedCharacters is map && data.ownedCharacters.size() >= 1 && data.ownedCharacters.size() <= 20
+        && data.partyIds is list && data.partyIds.size() >= 1 && data.partyIds.size() <= 4 && data.partyIds[0] is string
+        && data.highestStageIndex is number && data.highestStageIndex >= 0 && data.highestStageIndex <= 100
+        && data.selectedStageIndex is number && data.selectedStageIndex >= 0 && data.selectedStageIndex <= 100
+        && data.lastCashClaimAt is number && data.lastCashClaimAt >= 0
+        && data.arenaWins is number && data.arenaWins >= 0 && data.arenaWins <= 1000000
+        && data.raidClears is number && data.raidClears >= 0 && data.raidClears <= 1000000
+        && data.soundMuted is bool;
+    }
+
+    match /players/{playerId} {
+      allow get: if isSignedIn() && isValidId(playerId) && request.auth.uid == playerId;
+      allow list: if false;
+      allow delete: if false;
+
+      allow create: if isSignedIn()
+        && isVerified()
+        && isValidId(playerId)
+        && request.auth.uid == playerId
+        && isValidPlayerSave(incoming())
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time;
+
+      allow update: if isSignedIn()
+        && isVerified()
+        && isValidId(playerId)
+        && request.auth.uid == playerId
+        && isValidPlayerSave(incoming())
+        && incoming().ownerUid == existing().ownerUid
+        && incoming().createdAt == existing().createdAt
+        && incoming().updatedAt == request.time
+        && incoming().diff(existing()).affectedKeys().hasOnly([
+          'displayName',
+          'coins',
+          'envelopes',
+          'pityCounter',
+          'totalPulls',
+          'ownedCharacters',
+          'partyIds',
+          'highestStageIndex',
+          'selectedStageIndex',
+          'lastCashClaimAt',
+          'arenaWins',
+          'raidClears',
+          'soundMuted',
+          'updatedAt'
+        ]);
+    }
+  }
+}
