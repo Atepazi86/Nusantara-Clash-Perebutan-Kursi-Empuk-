@@ -303,6 +303,123 @@ function renderCharacterSvg(id: string) {
         </g>
       );
 
+    case 'pengacara_berlian':
+      return (
+        <g stroke={OUTLINE} strokeWidth="3.5" strokeLinejoin="round" strokeLinecap="round">
+          {/* Shiny Purple-Gold Shoes & Trousers */}
+          <rect x="44" y="90" width="12" height="17" rx="4" fill="#312e81" />
+          <rect x="64" y="90" width="12" height="17" rx="4" fill="#312e81" />
+          <ellipse cx="49" cy="108" rx="8" ry="4" fill="#facc15" />
+          <ellipse cx="71" cy="108" rx="8" ry="4" fill="#facc15" />
+          {/* Flashy Metallic Purple Suit + Gold Lapels */}
+          <rect x="34" y="61" width="52" height="33" rx="12" fill="#7e22ce" />
+          <path d="M51 61 L60 79 L69 61 Z" fill="#facc15" />
+          <circle cx="60" cy="83" r="3" fill="#38bdf8" strokeWidth="2" />
+          {/* Head */}
+          <rect x="34" y="20" width="52" height="44" rx="20" fill="#fbd3b6" />
+          {/* Slicked-back Hair */}
+          <path d="M34 32 Q42 13 60 14 Q78 13 86 32 Q70 22 60 24 Q50 22 34 32 Z" fill="#1e1e24" />
+          {/* Cool Dark Sunglasses */}
+          <rect x="39" y="36" width="18" height="10" rx="3" fill="#111827" />
+          <rect x="63" y="36" width="18" height="10" rx="3" fill="#111827" />
+          <line x1="57" y1="40" x2="63" y2="40" strokeWidth="2.8" />
+          <path d="M53 53 Q60 57 67 52" fill="none" strokeWidth="2.8" />
+          {/* Giant Sparkling Diamond Rings on Hands! */}
+          <circle cx="31" cy="76" r="6" fill="#fbd3b6" />
+          <polygon points="27,69 31,63 35,69 31,73" fill="#38bdf8" strokeWidth="2" />
+          <circle cx="89" cy="76" r="6" fill="#fbd3b6" />
+          <polygon points="85,69 89,63 93,69 89,73" fill="#facc15" strokeWidth="2" />
+          <polygon points="94,54 97,49 100,54 97,59" fill="#fef08a" stroke="none" />
+        </g>
+      );
+
+    case 'sultan_konten':
+      return (
+        <g stroke={OUTLINE} strokeWidth="3.5" strokeLinejoin="round" strokeLinecap="round">
+          {/* Sneakers & Joggers */}
+          <rect x="44" y="90" width="12" height="17" rx="4" fill="#1e293b" />
+          <rect x="64" y="90" width="12" height="17" rx="4" fill="#1e293b" />
+          <ellipse cx="49" cy="108" rx="8" ry="4" fill="#38bdf8" />
+          <ellipse cx="71" cy="108" rx="8" ry="4" fill="#38bdf8" />
+          {/* Vibrant Cyan/Gold Hoodie */}
+          <rect x="35" y="61" width="50" height="33" rx="12" fill="#0ea5e9" />
+          <rect x="46" y="75" width="28" height="13" rx="4" fill="#facc15" strokeWidth="2.5" />
+          {/* Head */}
+          <rect x="34" y="21" width="52" height="43" rx="20" fill="#fbd3b6" />
+          {/* Backwards Red Cap */}
+          <path d="M34 30 Q60 12 86 30 Z" fill="#ef4444" />
+          <path d="M74 27 L94 29" stroke="#991b1b" strokeWidth="5.5" />
+          {/* Happy Winking Eyes */}
+          <circle cx="48" cy="43" r="3" fill={OUTLINE} stroke="none" />
+          <path d="M67 43 Q72 39 77 43" fill="none" strokeWidth="3" />
+          <path d="M53 52 Q60 58 67 52" fill="none" strokeWidth="2.8" />
+          {/* Glowing Ring-Light Stand Prop! */}
+          <line x1="90" y1="60" x2="90" y2="95" strokeWidth="3.5" />
+          <circle cx="90" cy="52" r="11" fill="none" stroke="#fef08a" strokeWidth="5" />
+          <circle cx="90" cy="52" r="11" fill="none" stroke={OUTLINE} strokeWidth="2" />
+          <circle cx="84" cy="76" r="5.5" fill="#fbd3b6" />
+          <circle cx="34" cy="76" r="5.5" fill="#fbd3b6" />
+        </g>
+      );
+
+    case 'kang_sidak':
+      return (
+        <g stroke={OUTLINE} strokeWidth="3.5" strokeLinejoin="round" strokeLinecap="round">
+          {/* Field Boots & Cargo Pants */}
+          <rect x="44" y="90" width="12" height="17" rx="4" fill="#334155" />
+          <rect x="64" y="90" width="12" height="17" rx="4" fill="#334155" />
+          <ellipse cx="49" cy="108" rx="8" ry="4" fill="#78350f" />
+          <ellipse cx="71" cy="108" rx="8" ry="4" fill="#78350f" />
+          {/* White Shirt + Khaki Field Vest */}
+          <rect x="35" y="61" width="50" height="33" rx="12" fill="#ffffff" />
+          <rect x="38" y="62" width="17" height="31" rx="5" fill="#d97706" />
+          <rect x="65" y="62" width="17" height="31" rx="5" fill="#d97706" />
+          {/* Head */}
+          <rect x="34" y="21" width="52" height="43" rx="20" fill="#f5c6a5" />
+          {/* Traditional Iket Headband */}
+          <path d="M33 30 Q60 15 87 30 L84 18 Q60 11 36 18 Z" fill="#1e293b" />
+          <path d="M34 25 L86 25" stroke="#f8fafc" strokeWidth="3" strokeDasharray="6 4" />
+          {/* Determined Eyes */}
+          <circle cx="48" cy="43" r="3" fill={OUTLINE} stroke="none" />
+          <circle cx="72" cy="43" r="3" fill={OUTLINE} stroke="none" />
+          <path d="M54 53 Q60 56 66 53" fill="none" strokeWidth="2.8" />
+          {/* Action Camera / Clipboard */}
+          <rect x="82" y="60" width="16" height="14" rx="3" fill="#38bdf8" />
+          <circle cx="90" cy="67" r="3.5" fill="#1e1e24" />
+          <circle cx="83" cy="77" r="5.5" fill="#f5c6a5" />
+          <circle cx="34" cy="77" r="5.5" fill="#f5c6a5" />
+        </g>
+      );
+
+    case 'emak_sein':
+      return (
+        <g stroke={OUTLINE} strokeWidth="3.5" strokeLinejoin="round" strokeLinecap="round">
+          {/* Sandals */}
+          <rect x="44" y="90" width="12" height="16" rx="4" fill="#f5c6a5" />
+          <rect x="64" y="90" width="12" height="16" rx="4" fill="#f5c6a5" />
+          <ellipse cx="49" cy="108" rx="8" ry="4" fill="#ec4899" />
+          <ellipse cx="71" cy="108" rx="8" ry="4" fill="#ec4899" />
+          {/* Floral Daster Dress */}
+          <path d="M35 61 L85 61 L90 95 L30 95 Z" fill="#fb7185" />
+          <circle cx="48" cy="74" r="4" fill="#fef08a" stroke="none" />
+          <circle cx="71" cy="82" r="4" fill="#fef08a" stroke="none" />
+          <circle cx="58" cy="87" r="3.5" fill="#ffffff" stroke="none" />
+          {/* Head */}
+          <rect x="34" y="21" width="52" height="43" rx="20" fill="#fbd3b6" />
+          {/* Pink Scooter Helmet + Visor */}
+          <path d="M31 40 Q32 10 60 10 Q88 10 89 40 Z" fill="#f472b6" />
+          <rect x="39" y="28" width="42" height="10" rx="4" fill="#bae6fd" opacity="0.85" />
+          <circle cx="48" cy="44" r="3" fill={OUTLINE} stroke="none" />
+          <circle cx="72" cy="44" r="3" fill={OUTLINE} stroke="none" />
+          <path d="M55 53 Q60 56 65 53" fill="none" strokeWidth="2.8" />
+          {/* Blinking Left Turn Signal Prop! */}
+          <rect x="82" y="64" width="18" height="8" rx="3" fill="#475569" />
+          <circle cx="99" cy="68" r="5" fill="#facc15" />
+          <circle cx="83" cy="76" r="5.5" fill="#fbd3b6" />
+          <circle cx="34" cy="76" r="5.5" fill="#fbd3b6" />
+        </g>
+      );
+
     // Enemy Units & Raid Bosses
     case 'boss_inflasi':
       return (

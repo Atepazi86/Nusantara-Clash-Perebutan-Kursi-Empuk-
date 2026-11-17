@@ -68,10 +68,28 @@ interface BattleState {
   floatingNums: FloatingNumber[];
 }
 
+function getUltCost(templateId: string): number {
+  if (templateId === 'hansip_malam') return 85;
+  if (
+    templateId === 'mas_santuy' ||
+    templateId === 'abang_ojol' ||
+    templateId === 'ibu_senam' ||
+    templateId === 'kang_sidak' ||
+    templateId === 'emak_sein'
+  ) {
+    return 90;
+  }
+  return 100;
+}
+
 function buildAllyUnits(save: PlayerSaveData): BattleUnit[] {
   const hasIbuBantengAura = save.partyIds.some((id) => {
     const o = save.ownedCharacters[id];
     return id === 'ibu_banteng' && o && o.stars >= 3;
+  });
+  const hasSultanSpdAura = save.partyIds.some((id) => {
+    const o = save.ownedCharacters[id];
+    return id === 'sultan_konten' && o && o.stars >= 3;
   });
 
   return save.partyIds
@@ -81,6 +99,9 @@ function buildAllyUnits(save: PlayerSaveData): BattleUnit[] {
       if (!tpl || !owned) return null;
       const stats = computeCharacterStats(owned);
       const atkWithAura = hasIbuBantengAura ? Math.round(stats.atk * 1.15) : stats.atk;
+      const spdWithAura = stats.spd + (hasSultanSpdAura ? 12 : 0);
+      const critWithPassive =
+        stats.critRate + (id === 'pengacara_berlian' && owned.stars >= 3 ? 12 : 0);
 
       const unit: BattleUnit = {
         uid: `ally_${id}_${idx}`,
@@ -93,8 +114,8 @@ function buildAllyUnits(save: PlayerSaveData): BattleUnit[] {
         hp: stats.hp,
         atk: atkWithAura,
         def: stats.def,
-        spd: stats.spd,
-        critRate: stats.critRate,
+        spd: spdWithAura,
+        critRate: critWithPassive,
         gauge: Math.min(100, stats.startGauge),
         shield: 0,
         stunTurns: 0,
@@ -103,7 +124,7 @@ function buildAllyUnits(save: PlayerSaveData): BattleUnit[] {
         atkBuffPct: 0,
         defBuffTurns: 0,
         defBuffPct: 0,
-        evadeBuffTurns: 0,
+        evadeBuffTurns: id === 'emak_sein' && owned.stars >= 3 ? 2 : 0,
         spdBuffTurns: 0,
         atkDebuffTurns: 0,
         skillName: tpl.skills[1].name,
@@ -339,18 +360,26 @@ export const BattleTab: React.FC<BattleTabProps> = ({ save, onUpdateSave }) => {
     target: BattleUnit,
     mult: number,
     forceCrit = false,
-    bonusFlatDmg = 0
+    bonusFlatDmg = 0,
+    defIgnorePct = 0
   ): { dmg: number; isCrit: boolean; evaded: boolean } => {
     if (target.evadeBuffTurns > 0 && Math.random() < 0.55) {
       return { dmg: 0, isCrit: false, evaded: true };
     }
+    const lowHpBonus =
+      attacker.templateId === 'kang_sidak' &&
+      attacker.passiveUnlocked &&
+      attacker.hp < attacker.maxHp * 0.6
+        ? 0.25
+        : 0;
     const atkMult =
       1 +
-      (attacker.atkBuffTurns > 0 ? attacker.atkBuffPct / 100 : 0) -
-      (attacker.atkDebuffTurns > 0 ? 0.2 : 0);
+      (attacker.atkBuffTurns > 0 ? attacker.atkBuffPct / 100 : 0) +
+      lowHpBonus -
+      (attacker.atkDebuffTurns > 0 ? 0.22 : 0);
     const effectiveAtk = Math.max(20, attacker.atk * atkMult);
     const defMult = 1 + (target.defBuffTurns > 0 ? target.defBuffPct / 100 : 0);
-    const effectiveDef = Math.max(10, target.def * defMult);
+    const effectiveDef = Math.max(10, target.def * defMult * (1 - defIgnorePct));
 
     const mitigation = 100 / (100 + effectiveDef * 0.72);
     const isCrit = forceCrit || Math.random() * 100 < attacker.critRate;
@@ -400,7 +429,7 @@ export const BattleTab: React.FC<BattleTabProps> = ({ save, onUpdateSave }) => {
 
         if (forcedUltUnitUid) {
           const found = units.find((u) => u.uid === forcedUltUnitUid && u.hp > 0);
-          if (!found || found.gauge < 85) return prev;
+          if (!found || found.gauge < getUltCost(found.templateId)) return prev;
           actor = found;
         } else {
           if (nextPointer >= order.length) {
@@ -445,14 +474,7 @@ export const BattleTab: React.FC<BattleTabProps> = ({ save, onUpdateSave }) => {
           const friends = units.filter((u) => u.side === actor.side && u.hp > 0);
           const pickTarget = () => opponents.find((o) => o.tauntTurns > 0) || opponents[0];
 
-          const ultCost =
-            actor.templateId === 'hansip_malam'
-              ? 85
-              : actor.templateId === 'mas_santuy' ||
-                actor.templateId === 'abang_ojol' ||
-                actor.templateId === 'ibu_senam'
-              ? 90
-              : 100;
+          const ultCost = getUltCost(actor.templateId);
           const canUseUlt =
             Boolean(forcedUltUnitUid) ||
             (actor.gauge >= ultCost && (actor.side === 'enemy' || autoUlt));
@@ -599,6 +621,73 @@ export const BattleTab: React.FC<BattleTabProps> = ({ save, onUpdateSave }) => {
                   pushFloat(target.uid, `${res.dmg}`, 'damage');
                   break;
                 }
+                case 'pengacara_berlian': {
+                  shake = true;
+                  callout = { uid: actor.uid, text: 'SILAU BOSS!' };
+                  opponents.forEach((t) => {
+                    const res = applyHit(actor, t, 1.55);
+                    t.atkDebuffTurns = 2;
+                    if (res.evaded) evadedUids.push(t.uid);
+                    else hitUids.push(t.uid);
+                    pushFloat(t.uid, res.evaded ? 'MISS' : `${res.dmg}`, res.isCrit ? 'crit' : 'damage');
+                  });
+                  const selfHeal = Math.round(actor.maxHp * 0.2);
+                  actor.hp = Math.min(actor.maxHp, actor.hp + selfHeal);
+                  pushFloat(actor.uid, `+${selfHeal}`, 'heal');
+                  break;
+                }
+                case 'sultan_konten':
+                  shake = true;
+                  callout = { uid: actor.uid, text: 'GIVEAWAY!' };
+                  opponents.forEach((t) => {
+                    const res = applyHit(actor, t, 1.25);
+                    if (res.evaded) evadedUids.push(t.uid);
+                    else hitUids.push(t.uid);
+                    pushFloat(t.uid, res.evaded ? 'MISS' : `${res.dmg}`, res.isCrit ? 'crit' : 'damage');
+                  });
+                  friends.forEach((f) => {
+                    f.gauge = Math.min(100, f.gauge + 30);
+                    f.atkBuffTurns = 2;
+                    f.atkBuffPct = Math.max(f.atkBuffPct, 25);
+                    pushFloat(f.uid, '+30 ENG', 'buff');
+                  });
+                  break;
+                case 'kang_sidak': {
+                  shake = true;
+                  callout = { uid: actor.uid, text: 'SIDAK VIRAL!' };
+                  const target = pickTarget();
+                  const res = applyHit(actor, target, 2.1);
+                  if (res.evaded) evadedUids.push(target.uid);
+                  else hitUids.push(target.uid);
+                  pushFloat(target.uid, res.evaded ? 'MISS' : `${res.dmg}`, res.isCrit ? 'crit' : 'damage');
+                  const lowestAlly = [...friends].sort((a, b) => a.hp / a.maxHp - b.hp / b.maxHp)[0];
+                  if (lowestAlly) {
+                    const heal = Math.round(lowestAlly.maxHp * 0.22);
+                    lowestAlly.hp = Math.min(lowestAlly.maxHp, lowestAlly.hp + heal);
+                    lowestAlly.defBuffTurns = 2;
+                    lowestAlly.defBuffPct = Math.max(lowestAlly.defBuffPct, 25);
+                    pushFloat(lowestAlly.uid, `+${heal}`, 'heal');
+                  }
+                  break;
+                }
+                case 'emak_sein': {
+                  shake = true;
+                  callout = { uid: actor.uid, text: 'SEIN KIRI!' };
+                  const backTarget = opponents[opponents.length - 1];
+                  const res = applyHit(actor, backTarget, 2.25);
+                  if (res.evaded) {
+                    evadedUids.push(backTarget.uid);
+                    pushFloat(backTarget.uid, 'MISS', 'miss');
+                  } else {
+                    hitUids.push(backTarget.uid);
+                    pushFloat(backTarget.uid, `${res.dmg}`, res.isCrit ? 'crit' : 'damage');
+                    if (backTarget.hp > 0 && Math.random() < 0.55) {
+                      backTarget.stunTurns = 1;
+                      pushFloat(backTarget.uid, 'STUN!', 'debuff');
+                    }
+                  }
+                  break;
+                }
               }
               actionText = `${actor.name}: "${actor.skillName}!"`;
             }
@@ -609,7 +698,16 @@ export const BattleTab: React.FC<BattleTabProps> = ({ save, onUpdateSave }) => {
                 : pickTarget();
             const bonusHpDmg =
               actor.templateId === 'jenderal_gemoy' ? Math.round(actor.maxHp * 0.08) : 0;
-            const res = applyHit(actor, target, 1.12, false, bonusHpDmg);
+            const basicMult =
+              actor.templateId === 'pengacara_berlian' || actor.templateId === 'kang_sidak'
+                ? 1.2
+                : actor.templateId === 'emak_sein'
+                ? 1.18
+                : actor.templateId === 'sultan_konten'
+                ? 1.15
+                : 1.12;
+            const defIgnore = actor.templateId === 'pengacara_berlian' ? 0.2 : 0;
+            const res = applyHit(actor, target, basicMult, false, bonusHpDmg, defIgnore);
             if (res.evaded) {
               evadedUids.push(target.uid);
               soundFX.playSantuySlide();
@@ -624,6 +722,12 @@ export const BattleTab: React.FC<BattleTabProps> = ({ save, onUpdateSave }) => {
               if (res.isCrit) shake = true;
               soundFX.playHit(res.isCrit);
               pushFloat(target.uid, res.isCrit ? `${res.dmg}!` : `${res.dmg}`, res.isCrit ? 'crit' : 'damage');
+              if (actor.templateId === 'sultan_konten') {
+                const stolen = Math.min(15, target.gauge);
+                target.gauge -= stolen;
+                actor.gauge = Math.min(100, actor.gauge + 15);
+                if (stolen > 0) pushFloat(target.uid, `-${stolen} ENG`, 'debuff');
+              }
             }
 
             if (actor.templateId === 'ibu_banteng') target.atkDebuffTurns = 2;
@@ -635,6 +739,10 @@ export const BattleTab: React.FC<BattleTabProps> = ({ save, onUpdateSave }) => {
             actor.gauge = Math.min(100, actor.gauge + (actor.templateId === 'pak_tukang_kayu' ? 40 : 30));
             actionText = `${actor.name} → ${target.name} (${res.evaded ? 'Miss!' : res.dmg})`;
           }
+        }
+
+        if (actor.templateId === 'pengacara_berlian' && actor.passiveUnlocked && actor.hp > 0) {
+          actor.gauge = Math.min(100, actor.gauge + 15);
         }
 
         if (actor.templateId === 'abang_ojol' && actor.passiveUnlocked && actor.hp > 0) {
@@ -833,7 +941,8 @@ export const BattleTab: React.FC<BattleTabProps> = ({ save, onUpdateSave }) => {
         {/* Bottom Ultimate Trigger Cards */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
           {allies.map((unit) => {
-            const ready = unit.hp > 0 && unit.gauge >= 85 && battle.phase === 'fighting';
+            const ready =
+              unit.hp > 0 && unit.gauge >= getUltCost(unit.templateId) && battle.phase === 'fighting';
             return (
               <button
                 key={unit.uid}

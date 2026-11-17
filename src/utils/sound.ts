@@ -191,6 +191,33 @@ class SoundManager {
     });
   }
 
+  playDiamondFlash() {
+    // Sparkling rich chime + laser dazzle
+    [1046, 1318, 1567, 2093].forEach((f, i) => {
+      this.playTone(f, 0.14, 'sine', 0.08, i * 0.05);
+    });
+  }
+
+  playCameraDing() {
+    // Camera shutter + viral notification bell
+    this.playTone(880, 0.06, 'square', 0.05, 0, 440);
+    this.playTone(1174, 0.14, 'sine', 0.08, 0.08);
+    this.playTone(1567, 0.18, 'sine', 0.08, 0.16);
+  }
+
+  playSidakStamp() {
+    // Heavy inspection thud + camera click
+    this.playTone(160, 0.14, 'triangle', 0.11, 0, 70);
+    this.playTone(987, 0.08, 'sine', 0.07, 0.12);
+  }
+
+  playScooterHorn() {
+    // Scooter "Beep-beep!" horn + rev
+    this.playTone(698, 0.09, 'sawtooth', 0.06, 0);
+    this.playTone(698, 0.12, 'sawtooth', 0.06, 0.13);
+    this.playTone(220, 0.18, 'triangle', 0.07, 0.27, 460);
+  }
+
   playUltimateByHero(templateId: string) {
     switch (templateId) {
       case 'jenderal_gemoy':
@@ -216,6 +243,18 @@ class SoundManager {
         break;
       case 'hansip_malam':
         this.playKentongan();
+        break;
+      case 'pengacara_berlian':
+        this.playDiamondFlash();
+        break;
+      case 'sultan_konten':
+        this.playCameraDing();
+        break;
+      case 'kang_sidak':
+        this.playSidakStamp();
+        break;
+      case 'emak_sein':
+        this.playScooterHorn();
         break;
       default:
         this.playHit(true);
