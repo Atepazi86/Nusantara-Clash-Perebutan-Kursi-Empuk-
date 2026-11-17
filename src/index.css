@@ -232,6 +232,69 @@
   animation: callout-pop 1.15s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+/* Mythic Gacha Reveal Animations */
+@keyframes mythic-envelope {
+  0%, 100% { transform: rotate(0deg) scale(1.04); }
+  15% { transform: rotate(-10deg) translateX(-4px) scale(1.09); }
+  30% { transform: rotate(10deg) translateX(4px) scale(1.12); }
+  45% { transform: rotate(-9deg) translateY(-4px) scale(1.14); }
+  60% { transform: rotate(9deg) translateY(2px) scale(1.1); }
+  75% { transform: rotate(-7deg) scale(1.13); }
+}
+
+.animate-mythic-envelope {
+  animation: mythic-envelope 0.36s ease-in-out infinite;
+}
+
+@keyframes mythic-rays-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-mythic-rays {
+  animation: mythic-rays-spin 11s linear infinite;
+}
+
+@keyframes mythic-flash {
+  0% { opacity: 0.95; transform: scale(0.6); }
+  35% { opacity: 0.8; transform: scale(1.3); }
+  100% { opacity: 0; transform: scale(1.8); }
+}
+
+.animate-mythic-flash {
+  animation: mythic-flash 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes mythic-hero-slam {
+  0% { opacity: 0; transform: scale(0.2) translateY(-40px) rotate(-8deg); }
+  55% { opacity: 1; transform: scale(1.16) translateY(6px) rotate(3deg); }
+  75% { transform: scale(0.94) translateY(-4px) rotate(-2deg); }
+  100% { opacity: 1; transform: scale(1) translateY(0) rotate(0deg); }
+}
+
+.animate-mythic-hero-slam {
+  animation: mythic-hero-slam 0.62s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes mythic-banner-pop {
+  0% { opacity: 0; transform: scale(0.4) translateY(14px); }
+  65% { opacity: 1; transform: scale(1.12) translateY(-2px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.animate-mythic-banner-pop {
+  animation: mythic-banner-pop 0.45s 0.12s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes mythic-sparkle-float {
+  0%, 100% { transform: translateY(0px) scale(0.85) rotate(0deg); opacity: 0.75; }
+  50% { transform: translateY(-12px) scale(1.25) rotate(22deg); opacity: 1; }
+}
+
+.animate-mythic-sparkle {
+  animation: mythic-sparkle-float 1.6s ease-in-out infinite;
+}
+
 /* Subtle custom scrollbar for roster strip */
 .roster-scroll::-webkit-scrollbar {
   height: 7px;
@@ -248,6 +311,9 @@
 @media (prefers-reduced-motion: reduce) {
   .animate-chibi-bounce,
   .animate-envelope-wobble,
+  .animate-mythic-envelope,
+  .animate-mythic-rays,
+  .animate-mythic-sparkle,
   .animate-arena-shake,
   .animate-hit-shake,
   .animate-lunge-right,

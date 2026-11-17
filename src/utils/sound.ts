@@ -86,10 +86,39 @@ class SoundManager {
     });
   }
 
-  playPullDrum() {
+  playPullDrum(isMythic = false) {
     this.playTone(150, 0.14, 'sine', 0.1, 0, 90);
     this.playTone(180, 0.14, 'sine', 0.1, 0.18, 100);
     this.playTone(220, 0.18, 'triangle', 0.1, 0.36, 360);
+    if (isMythic) {
+      // Dramatic suspense riser for incoming Mythic drop
+      this.playTone(330, 0.45, 'triangle', 0.08, 0.42, 880);
+      this.playTone(660, 0.32, 'sine', 0.06, 0.65, 1320);
+    }
+  }
+
+  playMythicFanfare(characterId?: string) {
+    // Impact boom + golden jackpot arpeggio + grand chord
+    this.playTone(130, 0.32, 'triangle', 0.15, 0, 55);
+    this.playTone(261.6, 0.18, 'sawtooth', 0.05, 0.02, 523.2);
+
+    const fanfareNotes = [523.25, 659.25, 783.99, 1046.5, 1318.5, 1567.98];
+    fanfareNotes.forEach((f, i) => {
+      this.playTone(f, i === fanfareNotes.length - 1 ? 0.52 : 0.16, 'triangle', 0.1, 0.05 + i * 0.065);
+      this.playTone(f * 1.5, 0.18, 'sine', 0.05, 0.08 + i * 0.065);
+    });
+
+    // Shimmer sparkle chimes
+    [2093, 2349, 2637, 3135].forEach((f, i) => {
+      this.playTone(f, 0.24, 'sine', 0.045, 0.42 + i * 0.06);
+    });
+
+    // Follow up with the hero's comedic signature sound!
+    if (characterId) {
+      window.setTimeout(() => {
+        this.playUltimateByHero(characterId);
+      }, 480);
+    }
   }
 
   playReveal(isHighRarity: boolean) {
